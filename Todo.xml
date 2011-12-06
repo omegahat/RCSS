@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<?xml-stylesheet type="text/xsl" href="../../Docs/XSL/Todo.xsl" ?> 
+
+<!--<?xml-stylesheet type="text/xsl" href="file:///Users/duncan/Projects/org/omegahat/Docs/XSL/Todo.xsl" ?> -->
+<!-- <?xml-stylesheet type="text/xsl" href="http://www.omegahat.org/Todo.xsl" ?> -->
+
+<topics xmlns:r="http://www.r-project.org">
+<title>RCSS package</title>
+
+<topic>
+<title>Parsing</title>
+<items>
+<item>
+What happens to the page nodes. See test.R in tests/.
+<br/>
+</item>
+
+<item status="check">
+Get the names to be more reflective of the selectors
+in the actual CSS file, e.g. a:hover, code.r, a &gt; b
+<br/>
+May need more information about the . and &gt; etc. 
+<br/>
+The pseudo selectors have the : at the end "a hover:". Fixed now, but still have a space.
+</item>
+
+<item status="done">
+The import nodes don't seem to show up in the CSS names() list
+or items
+<br/>
+import has to be before any regular elements.
+It can be after a @charset.
+</item>
+
+<item status="check">
+Garbage collection.
+<br/>
+SelectionEngine done. Test
+<br/>
+Do CSSStyleSheet and use reference counting.
+Seems to work. See tests/gc.R
+</item>
+
+<item status="fix">
+Allow user to get line number of elements.
+<br/>
+getPos()
+<br/>
+Currently getting the end of the element, not the start.
+<br/>
+Not obvious we can do better in all cases.
+<r:code>
+library(RCSS)
+css = readCSS("inst/samples/OmegaTech.css")
+getPos(css[[6]])
+</r:code>
+</item>
+
+<item status="check">
+Selectors with multiple elements, e.g. a b or a &gt; b.
+See descendants.css
+<br/>
+Follow the next on the CRSelector in the simple_sel
+not just the add_sel.
+<r:code>
+library(RCSS)
+css = readCSS("inst/samples/descendant.css")
+x = asCSSObject(css[[4]])
+</r:code>
+</item>
+
+<item>
+Case insensitive matches
+</item>
+
+<item>
+Does libcroco deal with import nodes correctly when searching.
+Seems like the case for 
+AT_IMPORT_RULE_STMT in cr_sel_eng_get_matched_rulesets_real is empty
+and so is ignored.
+</item>
+
+<item>
+File name on the CSSStyleSheet object.
+</item>
+
+<item>
+Be able to find which file a rule/statement came from when import is in play.
+</item>
+
+<item status="low">
+Check out other C code for CSS
+http://ajax.sourceforge.net/cypress/
+
+http://bzr-playground.gnome.org/~robsta/
+</item>
+</items>
+</topic>
+</topics>

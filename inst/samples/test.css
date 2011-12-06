@@ -1,0 +1,25 @@
+@charset "UTF-8";
+@import "eg.css";
+
+@page { size 8.5in 11in; margin: 2cm }
+
+code {
+color: red;
+}
+
+a:hover { color:blue;}
+
+@font-face {
+        font-family: "Robson Celtic";
+        src: url("http://site/fonts/rob-celt")
+}
+
+@media screen, print {
+    BODY { line-height: 1.2 }
+}
+
+
+
+
+
+

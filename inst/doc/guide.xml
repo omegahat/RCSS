@@ -1,0 +1,215 @@
+<article xmlns:r="http://www.r-project.org"
+         xmlns:omg="http://www.omegahat.org">
+<title>Quick Introduction to the RCCS package</title>
+<author>
+<firstname>Duncan</firstname><surname>Temple Lang</surname>
+</author>
+
+<section>
+<title>Introduction</title>
+<para>
+This is a brief introduction to the <omg:pkg>RCSS</omg:pkg>
+package.  It is intended to allow us to read Cascading Style Sheet (CSS) 
+documents within R and to treat them as structured documents.
+We can then list the different CSS rules, imports, etc.
+in R to explore the contents of the CSS document. 
+More interestingly, we can query the CSS document
+for what style would be applied to a particular
+XML (or HTML) node. In this way, we can check 
+all the nodes in an XML document have a style,
+find which styles are applied to which types of nodes
+and determine what styles we have not implemented in
+the CSS document.
+</para>
+</section>
+<section>
+<title>Reading CSS files</title>
+<para>
+At present there are just a few functions in the package.  We start by
+reading a CSS document with the <r:func>readCSS</r:func> function.
+The primary argument in a call to this function provides the CSS
+content.  This can be either the name of a local file or the CSS
+content itself, i.e. an R string containing the CSS contents.  If the
+file is local, we can give its name, e.g
+<r:code>
+f = system.file("samples", "eg.css", package = "RCSS")
+css = readCSS(f)
+</r:code> 
+</para>
+<para>
+If the CSS material is available via a remote URL, then we can either
+download it to a local file (e.g. <r:func>download.file</r:func>) and
+use <r:func>readCSS</r:func> as before, or we can get its contents
+with <r:func pkg="RCurl">getURLContent</r:func> in the
+<omg:pkg>RCurl</omg:pkg> package.  With <r:func>getURLContent</r:func>, we
+end up with the CSS content as a string <footnote><para>A character
+vector of length 1</para></footnote>.  We can then pass this to
+<r:func>readCSS</r:func> and specify that it is to be interpreted as
+the text of the CSS content and not to be confused with a file name!
+<r:code>
+txt = getURLContent("http://www.omegahat.org/OmegaTech.css")
+css = readCSS(txt, asText = TRUE)
+</r:code>
+We can also provide the text using the <r:func>I</r:func>
+function in R to make it of class "AsIs":
+<r:code>
+css = readCSS(I(txt))
+</r:code>
+</para>
+<para>
+Alternatively, the CSS content might come from parsing an XML/HTML
+file and taking the inlined CSS material.  
+Let's look at an SVG file with an inlined CSS file
+<r:code>
+library(XML)
+f = system.file("samples", "bob.svg", package = "RCSS")
+doc = xmlParse(f)
+node = getNodeSet(doc, "//x:style[@type='text/css']", "x")[[1]]
+css = readCSS(I(xmlValue(node)))
+</r:code>
+</para>
+</section>
+
+<section>
+<title>Working with the CSS object</title>
+<para>
+Now that we have the parsed  CSS object in R,
+we can ask how many elements there are in the CSS
+file via the <r:func>length</r:func> method,
+<r:code>
+ length(css)
+</r:code>
+In a limited way, we can think of the CSS object as a list.  We can
+access individual elements using the [ and [[ operators, e.g
+<r:code>
+css[[1]]
+css[1:2]
+</r:code>
+The elements these return are of the general class
+<r:class>CSSStatement</r:class> but each will be of a class reflecting
+a particular type of statement.  (This hierarchy reflects the
+underlying libcroco library).  The classes are
+<r:class>AT_RULE</r:class>, <r:class>RULESET</r:class>,
+<r:class>IMPORT_RULE</r:class>, <r:class>MEDIA_RULE</r:class>,
+<r:class>PAGE_RULE</r:class>, <r:class>CHARSET_RULE</r:class>,
+<r:class>FONT_FACE_RULE</r:class>.
+All of these are references to the C-level CSS statement objects.
+They are not regular R objects. However, we can extract information
+from them and convert them to R lists, etc.
+</para>
+<para>
+We can ask for the names of the names of the elements
+and we get back the CSS selectors as strings.
+<r:code>
+names(css)
+</r:code>
+</para>
+<para>
+We can convert a reference to a C-level CSS entry
+to an R object using the generic function
+<r:func>asCSSObject</r:func>.
+For example, 
+<r:code>
+css = readCSS( system.file("samples", "eg.css", package = "RCSS") )
+asCSSObject(css[[3]])
+</r:code>
+The different classes for the different types of CSS objects are all sub-classes
+of the R class <r:class>CSSElement</r:class>.
+These classes are 
+<r:class>CSSRuleset</r:class>,
+<r:class>CSSMediaRule</r:class>,
+<r:class>CSSCharsetRule</r:class> and
+<r:class>CSSFontFaceRule</r:class>.
+(Neither <r:class>CSSPageRule</r:class> or
+<r:class>CSSImportRule</r:class> seem to appear in the
+list of CSS elements after the file has been read.)
+</para>
+<para>
+When we convert a CSS element to an R object, we have access to the
+details of the elements.  Converting a <r:class>RULESET</r:class>, we
+end up with a <r:class>CSSRuleset</r:class>.  This has two slots:
+declarations and selectors.  The selectors indicate to which nodes
+this CSS element applies.  The declarations is a list of the
+properties specific to this element.
+<r:code>
+library(RCSS)
+css = readCSS(system.file("samples", "descendant.css", package = "RCSS"))
+x = asCSSObject(css[[4]])  
+x@declarations    
+</r:code>
+The elements of the <r:slot>declarations</r:slot> list are
+<r:class>CSSDeclaration</r:class> objects.  Such objects have a
+property name, a value and a level of importance.  The selectors give
+the "rules" for which XML/HTML elements this CSS element 
+applies.
+</para>
+<para>
+We'll provide more information about these R-level classes in
+the future. For now, explore the classes.
+</para>
+</section>
+<section>
+<title>Resolving CSS elements for XML nodes</title>
+<para>
+One of the motivations for this package is to have the ability 
+to be able to query a CSS file for an element 
+that would apply to a particular XML or HTML node in a real document.
+We can find which elements have no styles or simply
+determine which CSS element applies and where it is located in the CSS.
+</para>
+<para>
+We'll look at an HTML file, in fact the version for this very  document.
+We'll find the associated CSS file
+<r:code>
+library(XML)
+doc = htmlParse(system.file("doc", "guide.html", package = "RCSS"))
+cssName = getNodeSet(doc, "//head/link[@rel='stylesheet' and @type='text/css']/@href")[[1]]
+css = readCSS(cssName)
+</r:code>
+Now we have the CSS file and the HTML document and its nodes.
+Let's look at the first h2 node and find its corresponding CSS rule, if there is one.
+<r:code>
+nodes = getNodeSet(doc, "//h2")
+getCSSRules(nodes[[1]], css)
+</r:code>
+Unfortunately, at present the matching is case-sensitive even though the
+CSS elements have an is_case_sensitive slot!
+This seems to be an error in libcroco, but we'll dig into it more
+to find a fix.
+</para>
+<para>
+Let's look at an SVG file that is provided as an example in this package.
+We'll find its inlined CSS document and then find all the path
+nodes and see which of these are governed by an entry in the CSS document.
+<r:code>
+library(XML)
+doc = xmlParse(system.file("samples", "bob.svg", package = "RCSS"))
+txt = xmlValue(getNodeSet(doc, "//x:style[@type='text/css']", "x")[[1]])
+css = readCSS(I(txt))
+paths = getNodeSet(doc, "//x:path", "x")
+rules = lapply(paths, getCSSRules, css)
+table(sapply(rules, length))
+</r:code>
+So 29 of the 208 path nodes do not have a CSS entry.
+</para>
+<para>
+If we are matching numerous XML/HTML nodes, it might
+be of some value to create just once the selection engine
+object used in the matching. Otherwise, a separate selection
+engine will be created for each call to <r:func>getCSSRules</r:func>
+and destroyed at the end of that call.
+This is relatively cheap, but we can avoid it
+by passing a selection engine object in
+the call to <r:func>getCSSRules</r:func>.
+<r:code>
+  library(XML)
+  doc = htmlParse("http://www.omegahat.org/index.html")
+  allNodes = getNodeSet(doc, "//*")
+  eng = .Call("R_createSelectionEngine")
+  css = readCSS(system.file("samples", "OmegaTech.css", package = 'RCSS'))
+  rules = lapply(allNodes, getCSSRules, css, eng)
+  table(sapply(rules, length))
+</r:code>
+</para>
+</section>
+</article>

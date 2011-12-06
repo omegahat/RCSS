@@ -1,0 +1,18 @@
+
+a c {
+  color:red;
+}
+
+a > b {
+  color:blue;
+}
+
+a > d, foo {
+  color: orange;
+}
+
+a > c > d, bar {
+  color: purple;
+  background: cyan;
+  font-weight: italic;
+}

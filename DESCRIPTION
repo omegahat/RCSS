@@ -1,0 +1,17 @@
+Package: RCSS
+Version: 0.2-0
+Title: Facilities for reading and working with CSS files in R
+Description: This is an interface to libcroco for reading CSS
+ files in R. This allows us to be able to understand the contents of a
+ CSS document. We can also explicitly match styles to XML/HTML nodes
+ to find which CSS elements will be applied to which XML/HTML nodes.
+Note: libcroco is used in Inkscape and development is active there. 
+    The changes there will hopefully be merged back into libcroco.
+    So libcroco is a reasonable library to use for CSS parsing, but it does 
+    have some bugs (case insensitive matching, handling of import nodes, page nodes).
+Author: Duncan Temple Lang
+Imports: methods
+System: libcroco
+Maintainer: Duncan Temple Lang <duncan@r-project.org>
+License: GPL
+

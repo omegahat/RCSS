@@ -1,0 +1,179 @@
+<?xml version="1.0"?>
+<article xmlns:r="http://www.r-project.org"
+         xmlns:xi="http://www.w3.org/2003/XInclude">
+
+<articleinfo>
+
+<title>Validating CSS and XSL parameters</title>
+
+<author><firstname>Duncan</firstname><surname>Temple Lang</surname>
+  <affiliation><orgname>University of California at Davis</orgname>
+               <orgdiv>Department of Statistics</orgdiv>
+  </affiliation>
+</author>
+</articleinfo>
+
+<section>
+<title></title>
+
+<para>
+In this example, we use <r:pkg>Sxslt</r:pkg> to
+find the global parameters controlling colors in 
+a FO document we generate from  documents containing
+R, shell, emacs, Python, etc. code.
+We find the colors specified for that text in the resulting
+PDF documents. Then we use the <r:pkg>RCSS</r:pkg>  pacage 
+to find the corresponding colors in the HTML CSS file and
+see if they match.
+
+<r:init>
+library(Sxslt)
+library(RCSS)
+</r:init>
+
+</para>
+<para>
+We start by reading the XSL file and finding the top-level
+parameters. This is slightly more complicated than a simple
+call to <r:func>getNodeSet</r:func> as we have to process 
+the <xml:tag>import</xml:tag> and <xml:tag>include</xml:tag>
+tags in the top-level XSL document. The function
+<r:func>getXSLParams</r:func> takes care of this for us
+(via the  <r:func>readXSL</r:func> function).
+</para>
+<para>
+We find the relevant XSL document "Rfo.xsl" which is in
+the <r:pkg>XDynDocs</r:pkg> package.
+We might use <r:func>system.file</r:func> to get the location of the XSL file -
+<r:code>
+fo.xsl = system.file("XSL", "OmegahatXSL", "fo", "Rfo.xsl") # or
+</r:code>
+However, we can use XML catalogs
+to do this with more flexibility as it allows  the
+user (or administrator) to identify the local location of
+this document in various ways, with the default being in the
+installed <r:pkg>XDynDocs</r:pkg> package directories.
+<r:code>
+library(XML)
+fo.xsl = catalogResolve("http://www.omegahat.org/XSL/fo/Rfo.xsl")
+</r:code>
+
+Now we can read the XSL file and find all the top-level parameters.
+<r:code>
+fo.params = getXSLParams(fo.xsl)
+</r:code>
+
+We are interested in the color ones, and specifically those
+name something with code.color in the name, e.g. r.code.color, js.code.color, ...
+<r:code>
+grep("color", names(fo.params), value = TRUE)
+grep("code\\.color", names(fo.params), value = TRUE)
+xsl.cols = fo.params[grep("code\\.color", names(fo.params), value = TRUE)]
+</r:code>
+
+So now we have the default value for these XSL parameters.
+We might also be interested in the parameters which start with "r."
+
+<r:code>
+grep("^r\\.", names(fo.params), value = TRUE)
+</r:code>
+
+</para>
+<para>
+We now turn our attention to the CSS file.
+<r:code>
+css = catalogResolve("http://www.omegahat.org/CSS/OmegaTech.css")
+if(is.na(css))
+  css = system.file("CSS", "OmegaTech.css", package = "XDynDocs")
+omg.css = readCSS(css)
+</r:code>
+This has <r:expr>length(omg.css)</r:expr> rules.
+We can see the selectors via 
+<r:code>
+names(omg.css)
+</r:code>
+
+Now we want to find the selectors for the PRE elements and a class.
+We can do this with  pattern matching for "pre .", and ignoring
+upper and lower case differences:
+<r:code>
+grep("pre \\.", names(omg.css), value = TRUE, ignore.case = TRUE)
+</r:code>
+So we have these and we can find the rules as R objects
+with the different settings, i.e. the bodies of the CSS rules:
+<r:code>
+rules = sapply(omg.css[grep("pre \\.", names(omg.css), value = TRUE, ignore.case = TRUE)], asCSSObject)
+</r:code>
+The list <r:var>rules</r:var> contains elements that are <r:class>CSSRuleset</r:class> objects.
+These have slots for the CSS selector(s) and the declarations for the rule.
+</para>
+
+<para>
+Now we have all the information from the XSL and CSS documents.
+We need to try to match the names of the XSL parameters to the
+corresponding CSS selectors. This is a heuristic, but one that
+we mostly know since we wrote both.
+Let's fetch the color for each of these CSS declarations:
+
+<r:code>
+css.cols = lapply(rules, getDeclaration, "color")
+</r:code>
+Note that the # prefix for RGB specified colors is not in the string.
+The class of the string is however <r:class>HexadecimalString</r:class>
+so we know how to interpret it.
+Since we will combine the values together into a character vector,
+we'll add the # to those values that are <r:class>HexadecimalStringg</r:class>s:
+<r:code>
+hexp = sapply(css.cols, is, "HexadecimalString")
+css.cols = structure(unlist(css.cols), names = names(css.cols))
+css.cols[hexp] = paste("#", css.cols[hexp], sep = "")
+</r:code>
+
+</para>
+<para>
+We have the colors, but we want to have the corresponding HTML/CSS classes.
+These are after the PRE, but some entries have multiple classes separated by a comma (,).
+To get the class and color, we can use
+
+<r:code>
+classes = gsub("(PRE|pre|div) \\. ", "", names(css.cols))
+tmp = strsplit(classes, ",[[:space:]]*")
+css.cols = structure(rep(css.cols, sapply(tmp, length)), names = unlist(tmp))
+</r:code>
+
+</para>
+<para>
+
+Now we can compare the colors in the XSL and CSS files,
+see which differ, which are defined in one but not the other.
+
+
+<r:code>
+xsl.lang = gsub("\\.code.color", "", names(xsl.cols))
+xsl.lang = gsub("\\.", "", xsl.lang)
+</r:code>
+
+</para>
+<para>
+We can find the languages used in XSL but not explicitly specified in CSS with
+<r:code>
+setdiff(tolower(xsl.lang), tolower(names(css.cols)))
+<r:output><![CDATA[
+[1] "xpath"   "xsl"     "html"    "js"      "as"      "program" "fo"     
+]]></r:output>
+</r:code>
+
+<r:code>
+setdiff(tolower(names(css.cols)), tolower(xsl.lang))
+<r:output><![CDATA[
+ [1] "xml"         "scode"       "s"           "rcode"       "examplecode" "r-commands"  "soutput"     "rerror"      "rwarning"    "swarning"   
+[11] "data"       
+]]></r:output>
+</r:code>
+
+
+
+</para>
+
+</section>
+</article>
