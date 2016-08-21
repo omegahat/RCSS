@@ -51,3 +51,6 @@ export(getPos)
 
 export(getDeclaration)
 exportMethods(getDeclaration)
+
+
+export(selectionEngine)

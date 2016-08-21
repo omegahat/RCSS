@@ -230,7 +230,6 @@ makeRCRTerm(CRTerm *val)
     for(i = 0 ; i < len; i++,  val = val->next) {
 	numProtect = 0;
 	switch(val->type) {
-
 	case TERM_NUMBER:
 	    PROTECT(ans = ScalarReal(val->content.num->val));
 	    SET_NAMES(ans, mkString(CRNumTypes[val->content.num->type]));
@@ -251,8 +250,19 @@ makeRCRTerm(CRTerm *val)
 	    numProtect++;
 	    SET_CLASS(ans, mkString("HexadecimalString"));
 	    break;
+	case TERM_FUNCTION:
+	case TERM_UNICODERANGE: {
+	    guchar *str = cr_term_to_string(val);
+	    PROTECT(ans = ScalarString(mkChar(str ? str : NA_STRING)));
+	    numProtect++;
+	    SET_CLASS(ans, ScalarString(mkChar( val->type == TERM_FUNCTION ? "TermFunction" : "UnicodeRange")));
+	    free(str);
+	    break;
+	}
 	default:
-	    fprintf(stderr, "Unhandled conversion %d\n", val->type);
+	    PROBLEM "Unhandled conversion %d\n", val->type
+		WARN;
+//	    REprintf("Unhandled conversion %d\n", val->type);
 	    ans = R_NilValue;
 	}
 

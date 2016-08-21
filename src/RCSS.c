@@ -21,3 +21,18 @@ R_GetRefValue(SEXP r_val, const char * const tag)
     p = R_ExternalPtrAddr(ref);
     return(p);
 }
+
+
+
+SEXP
+R_statement_to_string(SEXP r_stmt, SEXP r_indent)
+{
+    CRStatement *stmt;
+    gchar *ans;
+
+    stmt = R_GetStatementRef(r_stmt);
+    ans = cr_statement_to_string(stmt, INTEGER(r_indent)[0]);
+//XXX release the string!
+    free(ans);
+    return(ScalarString(mkChar( ans ? ans : NA_STRING)));
+ }
