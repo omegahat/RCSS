@@ -1,5 +1,5 @@
 
-include ../../Config/GNUmakefile.Web
+include $(OMEGA_HOME)/R/Config/GNUmakefile.Web
 
 DOCS=RCSS.pdf ../inst/doc/guide.html
 
