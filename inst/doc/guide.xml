@@ -205,7 +205,7 @@ the call to <r:func>getCSSRules</r:func>.
   library(XML)
   doc = htmlParse("http://www.omegahat.org/index.html")
   allNodes = getNodeSet(doc, "//*")
-  eng = .Call("R_createSelectionEngine")
+  eng = selectionEngine()
   css = readCSS(system.file("samples", "OmegaTech.css", package = 'RCSS'))
   rules = lapply(allNodes, getCSSRules, css, eng)
   table(sapply(rules, length))
