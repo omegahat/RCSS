@@ -4,11 +4,27 @@ AC_PATH_PROG(PKG_CONFIG, pkg-config)
 
 LIBCROCO_PKG_NAME="libcroco-0.6"
 
+if test -z "${PKG_CONFIG}" ; then
+ echo "Cannot find the pkg-config program in your PATH. Please add the directory in which it is located to the PATH environment variable, or set the environment variable PKG_CONFIG to the full name of the pkg-config executabl"
+ exit 1
+fi
+
+VERSION=`$PKG_CONFIG --modversion $LIBCROCO_PKG_NAME`
+if test ! $? ; then 
+  echo "Failed to find $LIBCROCO_PKG_NAME via $PKG_CONFIG"
+  exit 1;
+else
+  echo "Found version $VERSION of libcroco"
+fi
+
+
 PKG_CPPFLAGS=`$PKG_CONFIG --cflags $LIBCROCO_PKG_NAME`
 PKG_LIBS=`$PKG_CONFIG --libs $LIBCROCO_PKG_NAME`
 
+
 AC_SUBST(PKG_CPPFLAGS)
 AC_SUBST(PKG_LIBS)
+AC_SUBST(VERSION)
 
-AC_OUTPUT(src/Makevars)
+AC_OUTPUT(src/Makevars R/version.R)
 

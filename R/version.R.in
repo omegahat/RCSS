@@ -1,0 +1,2 @@
+libcrocoInfo = list(version = "@VERSION@")
+
