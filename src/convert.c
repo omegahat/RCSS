@@ -71,7 +71,7 @@ convertGListStrings(GList const *els)
 {
     int i, len = 0;
     SEXP ans;
-    GList *tmp = els;
+    const GList *tmp = els;
     for( ; tmp; len++, tmp = tmp->next) {}
 
     PROTECT(ans = allocVector(STRSXP, len));
@@ -118,14 +118,14 @@ SEXP
 R_convertStatement(SEXP r_stmt)
 {
     CRStatement *stmt;
-    SEXP ans;
+    SEXP ans = R_NilValue;
     stmt = R_GetStatementRef(r_stmt);
     switch(stmt->type) {
     case RULESET_STMT:
 	ans = copyRulesetToR(stmt);
 	break;
     case AT_RULE_STMT:
-
+//XXXX
 	break;
     case AT_IMPORT_RULE_STMT:
 	ans = copyImportRuleToR(stmt);
@@ -253,7 +253,8 @@ makeRCRTerm(CRTerm *val)
 	case TERM_FUNCTION:
 	case TERM_UNICODERANGE: {
 	    guchar *str = cr_term_to_string(val);
-	    PROTECT(ans = ScalarString(mkChar(str ? str : NA_STRING)));
+//XXX convert guchar to R string.
+	    PROTECT(ans = ScalarString(str ? mkChar((char *) str) : NA_STRING));
 	    numProtect++;
 	    SET_CLASS(ans, ScalarString(mkChar( val->type == TERM_FUNCTION ? "TermFunction" : "UnicodeRange")));
 	    free(str);
@@ -276,9 +277,9 @@ makeRCRTerm(CRTerm *val)
 SEXP
 convertTermIdent(CRTerm *val)
 {
-    int i, len = 0;
+//    int i, len = 0;
     CRTerm *tmp = val;
-    SEXP ans;
+//    SEXP ans;
 
     return(mkString(cr_string_peek_raw_str(tmp->content.str)));
 }

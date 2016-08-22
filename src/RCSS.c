@@ -1,7 +1,7 @@
 #include "RCSS.h"
 
 SEXP
-R_MakeRefObject(void *val, const char * const className, const char * const tag)
+R_MakeRefObject(const void *val, const char * const className, const char * const tag)
 {
     SEXP ans, klass, e;
     PROTECT(klass = MAKE_CLASS(className));
@@ -33,6 +33,6 @@ R_statement_to_string(SEXP r_stmt, SEXP r_indent)
     stmt = R_GetStatementRef(r_stmt);
     ans = cr_statement_to_string(stmt, INTEGER(r_indent)[0]);
 //XXX release the string!
-    free(ans);
-    return(ScalarString(mkChar( ans ? ans : NA_STRING)));
+//    free(ans);
+    return(ScalarString(ans ? mkChar( ans ) : NA_STRING));
  }

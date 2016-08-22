@@ -17,7 +17,7 @@ R_freeStyleSheet(SEXP r_obj)
 }
 
 SEXP
-R_MakeStyleSheetRef(const CRStyleSheet *sheet)
+R_MakeStyleSheetRef(/*const*/ CRStyleSheet *sheet)
 {
     SEXP ans;
     if(sheet)
