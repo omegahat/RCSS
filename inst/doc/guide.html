@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Quick Introduction to the RCCS package</title><link rel="stylesheet" href="http://www.omegahat.org/XDynDocs/CSS/OmegaTech.css" type="text/css"></link><meta name="generator" content="DocBook XSL Stylesheets V1.74.0"></meta></head><body><div class="article" lang="en"><div class="titlepage"><div><div><h2 class="title"><a id="id585524"></a>Quick Introduction to the RCCS package</h2></div></div><hr></hr></div><span class="author"><span class="firstname">Duncan</span> <span class="surname">Temple Lang</span></span><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="id60018"></a>Introduction</h2></div></div></div><p>
-This is a brief introduction to the <a xmlns:omg="http://www.omegahat.org" xmlns:rwx="http://www.omegahat.org/RwxWidgets" xmlns="" href="http://www.omegahat.org/RCSS">RCSS</a>
+<title>Quick Introduction to the RCCS package</title><link rel="stylesheet" type="text/css" href="/Users/duncan/GitWorkingArea/XDynDocs/inst/CSS/OmegaTech.css"></link><meta name="generator" content="DocBook XSL Stylesheets V1.76.1"></meta></head><body class="yui-skin-sam"><div class="article" title="Quick Introduction to the RCCS package"><div class="titlepage"><div><div><h2 class="title"><a id="idp140291601432864"></a>Quick Introduction to the RCCS package</h2></div></div><hr></hr></div><span class="author"><span class="firstname">Duncan</span> <span class="surname">Temple Lang</span></span><div class="section" title="Introduction"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="idp140291601434624"></a>Introduction</h2></div></div></div><p>
+This is a brief introduction to the <a xmlns="" href="http://www.omegahat.org/RCSS">RCSS</a>
 package.  It is intended to allow us to read Cascading Style Sheet (CSS) 
 documents within R and to treat them as structured documents.
 We can then list the different CSS rules, imports, etc.
@@ -13,136 +13,135 @@ all the nodes in an XML document have a style,
 find which styles are applied to which types of nodes
 and determine what styles we have not implemented in
 the CSS document.
-</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="id643009"></a>Reading CSS files</h2></div></div></div><p>
+</p></div><div class="section" title="Reading CSS files"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="idp140291601436784"></a>Reading CSS files</h2></div></div></div><p>
 At present there are just a few functions in the package.  We start by
-reading a CSS document with the <i xmlns:s3="http://www.r-project.org/S3" xmlns:cpp="http://www.cplusplus.org" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns=""><a href="readCSS.html">readCSS()
-  </a></i> function.
+reading a CSS document with the <i xmlns:r="http://www.r-project.org" xmlns:c="http://www.C.org" xmlns="" class="rfunc">readCSS()</i> function.
 The primary argument in a call to this function provides the CSS
 content.  This can be either the name of a local file or the CSS
 content itself, i.e. an R string containing the CSS contents.  If the
 file is local, we can give its name, e.g
-</p><div xmlns=""><pre class="rcode">
+</p><div xmlns="" class="codeToggle"><div class="unhidden" id="idp140291601438432"><div><pre class="rcode" title="R code">
 f = system.file("samples", "eg.css", package = "RCSS")
 css = readCSS(f)
-</pre></div>
+</pre></div></div></div>
+<div xmlns="" class="clearFloat"></div>
 <p> 
 </p><p>
-If the CSS material is available
-via a remote URL, then we can either download it to a local file
-(e.g. <i xmlns:s3="http://www.r-project.org/S3" xmlns:cpp="http://www.cplusplus.org" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns=""><a href="download.file.html">download.file()
-  </a></i>) and use <i xmlns:s3="http://www.r-project.org/S3" xmlns:cpp="http://www.cplusplus.org" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns=""><a href="readCSS.html">readCSS()
-  </a></i> as before,
-or we can get its contents with <i xmlns:s3="http://www.r-project.org/S3" xmlns:cpp="http://www.cplusplus.org" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns=""><a href="getUrl.html">getUrl()
-  </a></i> in the <a xmlns:omg="http://www.omegahat.org" xmlns:rwx="http://www.omegahat.org/RwxWidgets" xmlns="" href="http://www.omegahat.org/RCurl">RCurl</a> package.
-With <i xmlns:s3="http://www.r-project.org/S3" xmlns:cpp="http://www.cplusplus.org" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns=""><a href="getURL.html">getURL()
-  </a></i>, we end up with the CSS content as a string
-<sup>[<a id="id643058" href="#ftn.id643058" class="footnote">1</a>]</sup>.
-We can the pass this to <i xmlns:s3="http://www.r-project.org/S3" xmlns:cpp="http://www.cplusplus.org" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns=""><a href="readCSS.html">readCSS()
-  </a></i> and specify
-that it is to be interpreted as the text of the CSS content
-and not to be confused with a file name!
-</p><div xmlns=""><pre class="rcode">
-txt = getURL("http://www.omegahat.org/OmegaTech.css")
+If the CSS material is available via a remote URL, then we can either
+download it to a local file (e.g. <i xmlns:r="http://www.r-project.org" xmlns:c="http://www.C.org" xmlns="" class="rfunc">download.file()</i>) and
+use <i xmlns:r="http://www.r-project.org" xmlns:c="http://www.C.org" xmlns="" class="rfunc">readCSS()</i> as before, or we can get its contents
+with <i xmlns:r="http://www.r-project.org" xmlns:c="http://www.C.org" xmlns="" class="rfunc">getURLContent()</i> in the
+<a xmlns="" href="http://www.omegahat.org/RCurl">RCurl</a> package.  With <i xmlns:r="http://www.r-project.org" xmlns:c="http://www.C.org" xmlns="" class="rfunc">getURLContent()</i>, we
+end up with the CSS content as a string <sup>[<a id="idp140291601442032" href="#ftn.idp140291601442032" class="footnote">1</a>]</sup>.  We can then pass this to
+<i xmlns:r="http://www.r-project.org" xmlns:c="http://www.C.org" xmlns="" class="rfunc">readCSS()</i> and specify that it is to be interpreted as
+the text of the CSS content and not to be confused with a file name!
+</p><div xmlns="" class="codeToggle"><div class="unhidden" id="idp140291601443056"><div><pre class="rcode" title="R code">
+txt = getURLContent("http://www.omegahat.org/OmegaTech.css")
 css = readCSS(txt, asText = TRUE)
-</pre></div>
+</pre></div></div></div>
+<div xmlns="" class="clearFloat"></div>
 <p>
-We can also provide the text using the <i xmlns:s3="http://www.r-project.org/S3" xmlns:cpp="http://www.cplusplus.org" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns=""><a href="I.html">I()
-  </a></i>
+We can also provide the text using the <i xmlns:r="http://www.r-project.org" xmlns:c="http://www.C.org" xmlns="" class="rfunc">I()</i>
 function in R to make it of class "AsIs":
-</p><div xmlns=""><pre class="rcode">
+</p><div xmlns="" class="codeToggle"><div class="unhidden" id="idp140291601444032"><div><pre class="rcode" title="R code">
 css = readCSS(I(txt))
-</pre></div>
+</pre></div></div></div>
+<div xmlns="" class="clearFloat"></div>
 <p>
 </p><p>
 Alternatively, the CSS content might come from parsing an XML/HTML
 file and taking the inlined CSS material.  
 Let's look at an SVG file with an inlined CSS file
-</p><div xmlns=""><pre class="rcode">
+</p><div xmlns="" class="codeToggle"><div class="unhidden" id="idp140291601444976"><div><pre class="rcode" title="R code">
 library(XML)
 f = system.file("samples", "bob.svg", package = "RCSS")
 doc = xmlParse(f)
 node = getNodeSet(doc, "//x:style[@type='text/css']", "x")[[1]]
 css = readCSS(I(xmlValue(node)))
-</pre></div>
+</pre></div></div></div>
+<div xmlns="" class="clearFloat"></div>
 <p>
-</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="id643096"></a>Working with the CSS object</h2></div></div></div><p>
+</p></div><div class="section" title="Working with the CSS object"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="idp140291601445808"></a>Working with the CSS object</h2></div></div></div><p>
 Now that we have the parsed  CSS object in R,
 we can ask how many elements there are in the CSS
-file via the <i xmlns:s3="http://www.r-project.org/S3" xmlns:cpp="http://www.cplusplus.org" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns=""><a href="length.html">length()
-  </a></i> method,
-</p><div xmlns=""><pre class="rcode">
+file via the <i xmlns:r="http://www.r-project.org" xmlns:c="http://www.C.org" xmlns="" class="rfunc">length()</i> method,
+</p><div xmlns="" class="codeToggle"><div class="unhidden" id="idp140291601447200"><div><pre class="rcode" title="R code">
  length(css)
-</pre></div>
+</pre></div></div></div>
+<div xmlns="" class="clearFloat"></div>
 <p>
 In a limited way, we can think of the CSS object as a list.  We can
 access individual elements using the [ and [[ operators, e.g
-</p><div xmlns=""><pre class="rcode">
+</p><div xmlns="" class="codeToggle"><div class="unhidden" id="idp140291601447728"><div><pre class="rcode" title="R code">
 css[[1]]
 css[1:2]
-</pre></div>
+</pre></div></div></div>
+<div xmlns="" class="clearFloat"></div>
 <p>
 The elements these return are of the general class
-<i xmlns:s3="http://www.r-project.org/S3" xmlns:cpp="http://www.cplusplus.org" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns=""><a href="CSSStatement-class.html">CSSStatement</a></i> but each will be of a class reflecting
+<i xmlns=""><a href="Help/CSSStatement-class.html">CSSStatement</a></i> but each will be of a class reflecting
 a particular type of statement.  (This hierarchy reflects the
 underlying libcroco library).  The classes are
-<i xmlns:s3="http://www.r-project.org/S3" xmlns:cpp="http://www.cplusplus.org" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns=""><a href="AT_RULE-class.html">AT_RULE</a></i>, <i xmlns:s3="http://www.r-project.org/S3" xmlns:cpp="http://www.cplusplus.org" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns=""><a href="RULESET-class.html">RULESET</a></i>,
-<i xmlns:s3="http://www.r-project.org/S3" xmlns:cpp="http://www.cplusplus.org" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns=""><a href="IMPORT_RULE-class.html">IMPORT_RULE</a></i>, <i xmlns:s3="http://www.r-project.org/S3" xmlns:cpp="http://www.cplusplus.org" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns=""><a href="MEDIA_RULE-class.html">MEDIA_RULE</a></i>,
-<i xmlns:s3="http://www.r-project.org/S3" xmlns:cpp="http://www.cplusplus.org" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns=""><a href="PAGE_RULE-class.html">PAGE_RULE</a></i>, <i xmlns:s3="http://www.r-project.org/S3" xmlns:cpp="http://www.cplusplus.org" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns=""><a href="CHARSET_RULE-class.html">CHARSET_RULE</a></i>,
-<i xmlns:s3="http://www.r-project.org/S3" xmlns:cpp="http://www.cplusplus.org" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns=""><a href="FONT_FACE_RULE-class.html">FONT_FACE_RULE</a></i>.
+<i xmlns=""><a href="Help/AT_RULE-class.html">AT_RULE</a></i>, <i xmlns=""><a href="Help/RULESET-class.html">RULESET</a></i>,
+<i xmlns=""><a href="Help/IMPORT_RULE-class.html">IMPORT_RULE</a></i>, <i xmlns=""><a href="Help/MEDIA_RULE-class.html">MEDIA_RULE</a></i>,
+<i xmlns=""><a href="Help/PAGE_RULE-class.html">PAGE_RULE</a></i>, <i xmlns=""><a href="Help/CHARSET_RULE-class.html">CHARSET_RULE</a></i>,
+<i xmlns=""><a href="Help/FONT_FACE_RULE-class.html">FONT_FACE_RULE</a></i>.
 All of these are references to the C-level CSS statement objects.
 They are not regular R objects. However, we can extract information
 from them and convert them to R lists, etc.
 </p><p>
 We can ask for the names of the names of the elements
 and we get back the CSS selectors as strings.
-</p><div xmlns=""><pre class="rcode">
+</p><div xmlns="" class="codeToggle"><div class="unhidden" id="idp140291601452096"><div><pre class="rcode" title="R code">
 names(css)
-</pre></div>
+</pre></div></div></div>
+<div xmlns="" class="clearFloat"></div>
 <p>
 </p><p>
 We can convert a reference to a C-level CSS entry
 to an R object using the generic function
-<i xmlns:s3="http://www.r-project.org/S3" xmlns:cpp="http://www.cplusplus.org" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns=""><a href="asCSSObject.html">asCSSObject()
-  </a></i>.
+<i xmlns:r="http://www.r-project.org" xmlns:c="http://www.C.org" xmlns="" class="rfunc">asCSSObject()</i>.
 For example, 
-</p><div xmlns=""><pre class="rcode">
+</p><div xmlns="" class="codeToggle"><div class="unhidden" id="idp140291601453344"><div><pre class="rcode" title="R code">
 css = readCSS( system.file("samples", "eg.css", package = "RCSS") )
 asCSSObject(css[[3]])
-</pre></div>
+</pre></div></div></div>
+<div xmlns="" class="clearFloat"></div>
 <p>
 The different classes for the different types of CSS objects are all sub-classes
-of the R class <i xmlns:s3="http://www.r-project.org/S3" xmlns:cpp="http://www.cplusplus.org" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns=""><a href="CSSElement-class.html">CSSElement</a></i>.
+of the R class <i xmlns=""><a href="Help/CSSElement-class.html">CSSElement</a></i>.
 These classes are 
-<i xmlns:s3="http://www.r-project.org/S3" xmlns:cpp="http://www.cplusplus.org" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns=""><a href="CSSRuleset-class.html">CSSRuleset</a></i>,
-<i xmlns:s3="http://www.r-project.org/S3" xmlns:cpp="http://www.cplusplus.org" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns=""><a href="CSSMediaRule-class.html">CSSMediaRule</a></i>,
-<i xmlns:s3="http://www.r-project.org/S3" xmlns:cpp="http://www.cplusplus.org" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns=""><a href="CSSCharsetRule-class.html">CSSCharsetRule</a></i> and
-<i xmlns:s3="http://www.r-project.org/S3" xmlns:cpp="http://www.cplusplus.org" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns=""><a href="CSSFontFaceRule-class.html">CSSFontFaceRule</a></i>.
-(Neither <i xmlns:s3="http://www.r-project.org/S3" xmlns:cpp="http://www.cplusplus.org" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns=""><a href="CSSPageRule-class.html">CSSPageRule</a></i> or
-<i xmlns:s3="http://www.r-project.org/S3" xmlns:cpp="http://www.cplusplus.org" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns=""><a href="CSSImportRule-class.html">CSSImportRule</a></i> seem to appear in the
+<i xmlns=""><a href="Help/CSSRuleset-class.html">CSSRuleset</a></i>,
+<i xmlns=""><a href="Help/CSSMediaRule-class.html">CSSMediaRule</a></i>,
+<i xmlns=""><a href="Help/CSSCharsetRule-class.html">CSSCharsetRule</a></i> and
+<i xmlns=""><a href="Help/CSSFontFaceRule-class.html">CSSFontFaceRule</a></i>.
+(Neither <i xmlns=""><a href="Help/CSSPageRule-class.html">CSSPageRule</a></i> or
+<i xmlns=""><a href="Help/CSSImportRule-class.html">CSSImportRule</a></i> seem to appear in the
 list of CSS elements after the file has been read.)
 </p><p>
 When we convert a CSS element to an R object, we have access to the
-details of the elements.  Converting a <i xmlns:s3="http://www.r-project.org/S3" xmlns:cpp="http://www.cplusplus.org" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns=""><a href="RULESET-class.html">RULESET</a></i>, we
-end up with a <i xmlns:s3="http://www.r-project.org/S3" xmlns:cpp="http://www.cplusplus.org" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns=""><a href="CSSRuleset-class.html">CSSRuleset</a></i>.  This has two slots:
+details of the elements.  Converting a <i xmlns=""><a href="Help/RULESET-class.html">RULESET</a></i>, we
+end up with a <i xmlns=""><a href="Help/CSSRuleset-class.html">CSSRuleset</a></i>.  This has two slots:
 declarations and selectors.  The selectors indicate to which nodes
 this CSS element applies.  The declarations is a list of the
 properties specific to this element.
-</p><div xmlns=""><pre class="rcode">
+</p><div xmlns="" class="codeToggle"><div class="unhidden" id="idp140291601458160"><div><pre class="rcode" title="R code">
 library(RCSS)
 css = readCSS(system.file("samples", "descendant.css", package = "RCSS"))
 x = asCSSObject(css[[4]])  
 x@declarations    
-</pre></div>
+</pre></div></div></div>
+<div xmlns="" class="clearFloat"></div>
 <p>
-The elements of the <i xmlns:s3="http://www.r-project.org/S3" xmlns:cpp="http://www.cplusplus.org" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns="" class="rslot">declarations</i> list are
-<i xmlns:s3="http://www.r-project.org/S3" xmlns:cpp="http://www.cplusplus.org" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns=""><a href="CSSDeclaration-class.html">CSSDeclaration</a></i> objects.  Such objects have a
+The elements of the <i xmlns="" class="rslot">declarations</i> list are
+<i xmlns=""><a href="Help/CSSDeclaration-class.html">CSSDeclaration</a></i> objects.  Such objects have a
 property name, a value and a level of importance.  The selectors give
 the "rules" for which XML/HTML elements this CSS element 
 applies.
 </p><p>
 We'll provide more information about these R-level classes in
 the future. For now, explore the classes.
-</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="id643233"></a>Resolving CSS elements for XML nodes</h2></div></div></div><p>
+</p></div><div class="section" title="Resolving CSS elements for XML nodes"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="idp140291601460384"></a>Resolving CSS elements for XML nodes</h2></div></div></div><p>
 One of the motivations for this package is to have the ability 
 to be able to query a CSS file for an element 
 that would apply to a particular XML or HTML node in a real document.
@@ -151,19 +150,21 @@ determine which CSS element applies and where it is located in the CSS.
 </p><p>
 We'll look at an HTML file, in fact the version for this very  document.
 We'll find the associated CSS file
-</p><div xmlns=""><pre class="rcode">
+</p><div xmlns="" class="codeToggle"><div class="unhidden" id="idp140291601462144"><div><pre class="rcode" title="R code">
 library(XML)
 doc = htmlParse(system.file("doc", "guide.html", package = "RCSS"))
 cssName = getNodeSet(doc, "//head/link[@rel='stylesheet' and @type='text/css']/@href")[[1]]
 css = readCSS(cssName)
-</pre></div>
+</pre></div></div></div>
+<div xmlns="" class="clearFloat"></div>
 <p>
 Now we have the CSS file and the HTML document and its nodes.
 Let's look at the first h2 node and find its corresponding CSS rule, if there is one.
-</p><div xmlns=""><pre class="rcode">
+</p><div xmlns="" class="codeToggle"><div class="unhidden" id="idp140291601462896"><div><pre class="rcode" title="R code">
 nodes = getNodeSet(doc, "//h2")
 getCSSRules(nodes[[1]], css)
-</pre></div>
+</pre></div></div></div>
+<div xmlns="" class="clearFloat"></div>
 <p>
 Unfortunately, at present the matching is case-sensitive even though the
 CSS elements have an is_case_sensitive slot!
@@ -173,7 +174,7 @@ to find a fix.
 Let's look at an SVG file that is provided as an example in this package.
 We'll find its inlined CSS document and then find all the path
 nodes and see which of these are governed by an entry in the CSS document.
-</p><div xmlns=""><pre class="rcode">
+</p><div xmlns="" class="codeToggle"><div class="unhidden" id="idp140291601464160"><div><pre class="rcode" title="R code">
 library(XML)
 doc = xmlParse(system.file("samples", "bob.svg", package = "RCSS"))
 txt = xmlValue(getNodeSet(doc, "//x:style[@type='text/css']", "x")[[1]])
@@ -181,28 +182,29 @@ css = readCSS(I(txt))
 paths = getNodeSet(doc, "//x:path", "x")
 rules = lapply(paths, getCSSRules, css)
 table(sapply(rules, length))
-</pre></div>
+</pre></div></div></div>
+<div xmlns="" class="clearFloat"></div>
 <p>
 So 29 of the 208 path nodes do not have a CSS entry.
 </p><p>
 If we are matching numerous XML/HTML nodes, it might
 be of some value to create just once the selection engine
 object used in the matching. Otherwise, a separate selection
-engine will be created for each call to <i xmlns:s3="http://www.r-project.org/S3" xmlns:cpp="http://www.cplusplus.org" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns=""><a href="getCSSRules.html">getCSSRules()
-  </a></i>
+engine will be created for each call to <i xmlns:r="http://www.r-project.org" xmlns:c="http://www.C.org" xmlns="" class="rfunc">getCSSRules()</i>
 and destroyed at the end of that call.
 This is relatively cheap, but we can avoid it
 by passing a selection engine object in
-the call to <i xmlns:s3="http://www.r-project.org/S3" xmlns:cpp="http://www.cplusplus.org" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns=""><a href="getCSSRules.html">getCSSRules()
-  </a></i>.
-</p><div xmlns=""><pre class="rcode">
+the call to <i xmlns:r="http://www.r-project.org" xmlns:c="http://www.C.org" xmlns="" class="rfunc">getCSSRules()</i>.
+</p><div xmlns="" class="codeToggle"><div class="unhidden" id="idp140291601466416"><div><pre class="rcode" title="R code">
   library(XML)
   doc = htmlParse("http://www.omegahat.org/index.html")
   allNodes = getNodeSet(doc, "//*")
-  eng = .Call("R_createSelectionEngine")
+  eng = selectionEngine()
   css = readCSS(system.file("samples", "OmegaTech.css", package = 'RCSS'))
   rules = lapply(allNodes, getCSSRules, css, eng)
   table(sapply(rules, length))
-</pre></div>
+</pre></div></div></div>
+<div xmlns="" class="clearFloat"></div>
 <p>
-</p></div><div class="footnotes"><br></br><hr width="100" align="left"></hr><div class="footnote"><p><sup>[<a id="ftn.id643058" href="#id643058" class="para">1</a>] </sup>A character vector of length 1</p></div></div></div></body></html>
+</p></div><div class="footnotes"><br></br><hr width="100" align="left"></hr><div class="footnote"><p><sup>[<a id="ftn.idp140291601442032" href="#idp140291601442032" class="para">1</a>] </sup>A character
+vector of length 1</p></div></div></div></body></html>

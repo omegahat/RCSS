@@ -1,6 +1,6 @@
 
 getCSSRules =
-function(nodes, sheet, eng = selectionEngine())  
+function(nodes, sheet, eng = NULL) # selectionEngine()  
 {
   if(length(nodes) > 1)
     return(lapply(nodes,
